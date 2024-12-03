@@ -6,6 +6,7 @@ use app\models\Articles;
 use app\models\ArticlesSearch;
 use app\models\Categories;
 use app\models\ImageUpload;
+use app\models\Tags;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -158,7 +159,12 @@ class ArticleController extends Controller
     public function actionSetCategory($id)
     {
         $article = $this->findModel($id);
-        $selectedCategory = $article->category->id;
+        if(!empty($article->category->id))
+        {
+            $selectedCategory = $article->category->id;
+        } else {
+            $selectedCategory = 1;
+        }
         $categories = ArrayHelper::map(Categories::find()->all(), 'id', 'title');
 
         if(Yii::$app->request->isPost)
@@ -175,6 +181,29 @@ class ArticleController extends Controller
             'selectedCategory'=>$selectedCategory,
             'categories'=>$categories
         ]);
+
     }
+
+    public function actionSetTags($id)
+    {
+       $article = $this->findModel($id);
+       $selectedTag = $article->getSelectedTag();
+       $tags = ArrayHelper::map(Tags::find()->all(), 'id', 'title');
+
+       if(Yii::$app->request->isPost)
+       {
+           $tags = Yii::$app->request->post('tags');
+          $article->saveTags($tags);
+          return $this->redirect(['view', 'id' => $article->id]);
+       }
+
+       return $this->render('tags',[
+           'article'=>$article,
+           'selectedTag'=>$selectedTag,
+            'tags'=>$tags
+       ]);
+    }
+
+
 
 }
