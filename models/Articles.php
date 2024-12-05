@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 
@@ -143,5 +144,41 @@ class Articles extends \yii\db\ActiveRecord
                 $this->link('tags', $tag);
             }
         }
+    }
+
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+
+    public static function getAll($pageSize = 1)
+    {
+        // build a DB query to get all articles
+        $query = Articles::find();
+
+// get the total number of articles (but do not fetch the article data yet)
+        $count = $query->count();
+
+// create a pagination object with the total count
+        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
+
+// limit the query using the pagination and retrieve the articles
+        $articles = $query->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        $data['articles'] = $articles;
+        $data['pagination'] = $pagination;
+        return $data;
+    }
+
+    public static function getPopularArticles()
+    {
+        return Articles::find()->orderBy(['viewed' => SORT_DESC])->limit(3)->all();
+    }
+
+    public static function getLastArticles()
+    {
+        return Articles::find()->orderBy(['date' => SORT_DESC])->limit(3)->all();
+
     }
 }

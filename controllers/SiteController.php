@@ -3,7 +3,9 @@
 namespace app\controllers;
 
 use app\models\Articles;
+use app\models\Categories;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -61,35 +63,28 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
-        // build a DB query to get all articles
-        $query = Articles::find();
 
-// get the total number of articles (but do not fetch the article data yet)
-        $count = $query->count();
-
-// create a pagination object with the total count
-        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => 5]);
-
-// limit the query using the pagination and retrieve the articles
-        $articles = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-
+        $data = Articles::getAll(5);
+        $popularArticles = Articles::getPopularArticles();
+        $lastArticles = Articles::getLastArticles();
+        $categories = Categories::getAllCategories();
         return $this->render('index',[
-            'articles' => $articles,
-            'pagination' => $pagination,
+            'articles' => $data['articles'],
+            'pagination' => $data['pagination'],
+            'popularArticles' => $popularArticles,
+            'lastArticles' => $lastArticles,
+            'categories' => $categories,
         ]);
     }
 
-    public function actionSingle()
+    public function actionSingle(): string
     {
         return $this->render('single');
     }
 
-    public function actionCategory()
+    public function actionCategory(): string
     {
         return $this->render('category');
     }
@@ -99,7 +94,7 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionLogin()
+    public function actionLogin(): Response|string
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -121,7 +116,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionLogout()
+    public function actionLogout(): Response
     {
         Yii::$app->user->logout();
 
@@ -133,7 +128,7 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionContact()
+    public function actionContact(): Response|string
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -151,7 +146,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionAbout()
+    public function actionAbout(): string
     {
         return $this->render('about');
     }
