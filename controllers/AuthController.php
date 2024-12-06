@@ -2,11 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Articles;
-use app\models\Categories;
+use app\models\Users;
 use Yii;
-use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -14,12 +11,12 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
-class SiteController extends Controller
+class AuthController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -45,7 +42,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
@@ -56,59 +53,6 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
-    }
-
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex(): string
-    {
-
-        $data = Articles::getAll(5);
-        $popularArticles = Articles::getPopularArticles();
-        $lastArticles = Articles::getLastArticles();
-        $categories = Categories::getAllCategories();
-        return $this->render('index',[
-            'articles' => $data['articles'],
-            'pagination' => $data['pagination'],
-            'popularArticles' => $popularArticles,
-            'lastArticles' => $lastArticles,
-            'categories' => $categories,
-        ]);
-    }
-
-    public function actionView($id): string
-    {
-        $article = Articles::findOne($id);
-        $articleTags = $article->getTags()->all();
-        $popularArticles = Articles::getPopularArticles();
-        $lastArticles = Articles::getLastArticles();
-        $categories = Categories::getAllCategories();
-        return $this->render('view',[
-            'article' => $article,
-            'articleTags' => $articleTags,
-            'popularArticles' => $popularArticles,
-            'lastArticles' => $lastArticles,
-            'categories' => $categories,
-        ]);
-
-    }
-
-    public function actionCategory($id): string
-    {
-        $data = Categories::getAllArticletToCategoryId($id,1);
-        $popularArticles = Articles::getPopularArticles();
-        $lastArticles = Articles::getLastArticles();
-        $categories = Categories::getAllCategories();
-        return $this->render('category',[
-            'articles' => $data['articles'],
-            'pagination' => $data['pagination'],
-            'popularArticles' => $popularArticles,
-            'lastArticles' => $lastArticles,
-            'categories' => $categories,
-        ]);
     }
 
     /**
@@ -128,7 +72,7 @@ class SiteController extends Controller
         }
 
         $model->password = '';
-        return $this->render('login', [
+        return $this->render('/auth/login', [
             'model' => $model,
         ]);
     }
@@ -163,13 +107,8 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout(): string
+    public function actionRegister()
     {
-        return $this->render('about');
+
     }
 }
