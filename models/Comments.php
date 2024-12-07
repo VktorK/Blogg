@@ -14,10 +14,13 @@ use Yii;
  * @property int|null $status
  *
  * @property Articles $article
- * @property Users $user
+ * @property User $user
  */
 class Comments extends \yii\db\ActiveRecord
 {
+
+    const STATUS_ALLOW = 1;
+    const STATUS_DISALLOW = 0;
     /**
      * {@inheritdoc}
      */
@@ -35,7 +38,7 @@ class Comments extends \yii\db\ActiveRecord
             [['user_id', 'article_id', 'status'], 'integer'],
             [['text'], 'string', 'max' => 255],
             [['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::class, 'targetAttribute' => ['article_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -70,6 +73,28 @@ class Comments extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+
+    public function allow()
+    {
+        $this->status = self::STATUS_ALLOW;
+
+        return $this->save(false);
+    }
+
+    public function disallow()
+    {
+        $this->status = self::STATUS_DISALLOW;
+        return $this->save(false);
+    }
+
+    public function isAllowed()
+    {
+        return $this->status;
     }
 }

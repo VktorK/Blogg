@@ -2,26 +2,25 @@
 //
 //namespace app\models;
 //
-//use yii\base\BaseObject;
-//use yii\db\ActiveRecord;
+//use Yii;
 //use yii\web\IdentityInterface;
 //
 ///**
-// * This is the model class for table "users".
+// * This is the model class for table "user".
 // *
-// * @property int $id
+// * @property integer $id
 // * @property string $name
-// * @property string|null $email
+// * @property string $email
 // * @property string $password
-// * @property int|null $is_admin
-// * @property string|null $photo
+// * @property integer $isAdmin
+// * @property string $photo
 // *
-// * @property Comments[] $comments
+// * @property Comment[] $comments
 // */
-//class Users extends ActiveRecord implements IdentityInterface
+//class User extends \yii\db\ActiveRecord implements IdentityInterface
 //{
 //    /**
-//     * {@inheritdoc}
+//     * @inheritdoc
 //     */
 //    public static function tableName()
 //    {
@@ -29,19 +28,18 @@
 //    }
 //
 //    /**
-//     * {@inheritdoc}
+//     * @inheritdoc
 //     */
 //    public function rules()
 //    {
 //        return [
-//            [['name', 'password'], 'required'],
-//            [['is_admin'], 'integer'],
+//            [['isAdmin'], 'integer'],
 //            [['name', 'email', 'password', 'photo'], 'string', 'max' => 255],
 //        ];
 //    }
 //
 //    /**
-//     * {@inheritdoc}
+//     * @inheritdoc
 //     */
 //    public function attributeLabels()
 //    {
@@ -50,31 +48,23 @@
 //            'name' => 'Name',
 //            'email' => 'Email',
 //            'password' => 'Password',
-//            'is_admin' => 'Is Admin',
+//            'isAdmin' => 'Is Admin',
 //            'photo' => 'Photo',
 //        ];
 //    }
 //
 //    /**
-//     * Gets query for [[Comments]].
-//     *
 //     * @return \yii\db\ActiveQuery
 //     */
 //    public function getComments()
 //    {
-//        return $this->hasMany(Comments::class, ['user_id' => 'id']);
+//        return $this->hasMany(Comment::className(), ['user_id' => 'id']);
 //    }
 //
 //    public static function findIdentity($id)
 //    {
-//        return Users::findOne($id);
+//        return User::findOne($id);
 //    }
-//
-//    public static function findIdentityByAccessToken($token, $type = null)
-//    {
-//        // TODO: Implement findIdentityByAccessToken() method.
-//    }
-//
 //    public function getId()
 //    {
 //        return $this->id;
@@ -90,19 +80,50 @@
 //        // TODO: Implement validateAuthKey() method.
 //    }
 //
+//    public static function findIdentityByAccessToken($token, $type = null)
+//    {
+//        // TODO: Implement findIdentityByAccessToken() method.
+//    }
+//
+//    public static function findByEmail($email)
+//    {
+//        return User::find()->where(['email'=>$email])->one();
+//    }
+//
 //    public function validatePassword($password)
 //    {
-//        return $this->password === $password;
+//        return $this->password == $password;
 //    }
 //
-//    public static function findUserByName($username)
+//    public function create()
 //    {
-////        var_dump(Users::find()->where(['name'=>$username])->one());die();
-//        return Users::find()->where(['name'=>$username])->one();
+//        return $this->save(false);
 //    }
 //
-//    public function validateThisPassword($password)
+//    public function saveFromVk($uid, $name, $photo)
 //    {
-//        return $this->password === $password;
+//        $user = User::findOne($uid);
+//        if($user)
+//        {
+//            return Yii::$app->user->login($user);
+//        }
+//
+//        $this->id = $uid;
+//        $this->name = $name;
+//        $this->photo = $photo;
+//        $this->create();
+//
+//        return Yii::$app->user->login($this);
 //    }
+//
+//    public function getImage()
+//    {
+//        return $this->photo;
+//    }
+//
+//    public function createUser(): bool
+//    {
+//        return $this->save(false);
+//    }
+//
 //}
