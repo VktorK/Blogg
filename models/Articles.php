@@ -88,6 +88,11 @@ class Articles extends \yii\db\ActiveRecord
         return $this->hasMany(Comments::class, ['article_id' => 'id']);
     }
 
+    public function getArticleComments()
+    {
+        return $this->getComments()->where(['status' => 1])->all();
+    }
+
     public function saveImage($filename)
     {
         $this->image = $filename;
@@ -180,5 +185,18 @@ class Articles extends \yii\db\ActiveRecord
     {
         return Articles::find()->orderBy(['date' => SORT_DESC])->limit(3)->all();
 
+    }
+
+
+
+    public function saveArticle()
+    {
+        $this->user_id = Yii::$app->user->id;
+        return $this->save(false);
+    }
+
+    public function getAuthor()
+    {
+        return $this->hasOne(User::className(), ['id'=>'user_id']);
     }
 }
