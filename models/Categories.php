@@ -62,16 +62,13 @@ class Categories extends \yii\db\ActiveRecord
         // build a DB query to get all articles
         $query = Categories::findOne($id)->getArticles();
 
-//        var_dump($query);
-//        die();
-
-// get the total number of articles (but do not fetch the article data yet)
+        // get the total number of articles (but do not fetch the article data yet)
         $count = $query->count();
 
-// create a pagination object with the total count
+        // create a pagination object with the total count
         $pagination = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
 
-// limit the query using the pagination and retrieve the articles
+        // limit the query using the pagination and retrieve the articles
         $articles = $query->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();

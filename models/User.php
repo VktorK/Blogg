@@ -120,4 +120,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->photo;
     }
+
+    public function createUser(): bool
+    {
+        return $this->save(false);
+    }
 }

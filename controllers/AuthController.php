@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\Users;
+use app\models\RegisterForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -109,6 +109,15 @@ class AuthController extends Controller
 
     public function actionRegister()
     {
+        $model = new RegisterForm();
+        if(Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->post());
+            if($model->register())
+            {
+                return $this->redirect('login');
+            }
 
+        }
+        return $this->render('register', ['model' => $model]);
     }
 }

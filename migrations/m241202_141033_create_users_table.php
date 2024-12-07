@@ -15,10 +15,10 @@ class m241202_141033_create_users_table extends Migration
         $this->createTable('{{%users}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(),
-            'email' => $this->string()->defaultValue(null),
+            'email' => $this->string()->unique()->notNull(),
             'password' => $this->string(),
             'is_admin' => $this->boolean()->defaultValue(0),
-            'photo' => $this->string()->defaultValue(null),
+            'photo' => $this->string(),
         ]);
     }
 
