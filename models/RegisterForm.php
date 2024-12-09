@@ -63,9 +63,4 @@ class RegisterForm extends Model
         return false;
     }
 
-    public function actionTEST()
-    {
-        return true;
-    }
-
 }
