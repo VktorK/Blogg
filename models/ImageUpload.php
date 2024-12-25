@@ -18,7 +18,7 @@ class ImageUpload extends Model
         ];
     }
 
-    public function uploadFile(UploadedFile $file, $currentImage): \Exception|string
+    public function uploadFile(UploadedFile $file, $currentImage): bool|string
     {
 
         $this->image = $file;
@@ -27,6 +27,7 @@ class ImageUpload extends Model
             $this->deleteCurrentImage($currentImage);
             return $this->saveImage();
         }
+        return false;
     }
 
     public function getFolders(): string

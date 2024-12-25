@@ -89,6 +89,8 @@ class SiteController extends Controller
         $lastArticles = Articles::getLastArticles();
         $categories = Categories::getAllCategories();
         $comments = $article->getArticleComments();
+        $author = $article->getAuthor($article->user_id);
+//        echo '<pre>';var_dump($author); echo '<pre>';die();
         $commentForm = new CommentForm();
 //        echo '<pre>';
 //        var_dump($comments);
@@ -102,6 +104,7 @@ class SiteController extends Controller
             'categories' => $categories,
             'commentForm' => $commentForm,
             'comments' => $comments,
+            'author' => $author,
         ]);
 
     }

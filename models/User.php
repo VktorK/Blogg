@@ -70,6 +70,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->id;
     }
 
+    public function getArticles()
+    {
+        return $this->hasMany(Articles::className(), ['user_id' => 'id']);
+    }
+
     public function getAuthKey()
     {
         // TODO: Implement getAuthKey() method.

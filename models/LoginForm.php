@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\behaviors\AddSomeProperties;
 use Yii;
 use yii\base\Model;
 
@@ -18,7 +19,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_user = false;
+    public $_user = false;
 
 
     /**
@@ -36,6 +37,7 @@ class LoginForm extends Model
         ];
     }
 
+
     /**
      * Validates the password.
      * This method serves as the inline validation for password.
@@ -45,6 +47,7 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
+
         if (!$this->hasErrors()) {
             $user = $this->getUser();
 
@@ -68,7 +71,7 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      *
      * @return array
      */
@@ -77,6 +80,7 @@ class LoginForm extends Model
         if ($this->_user === false) {
             $this->_user = User::findByEmail($this->email);
         }
+
         return $this->_user;
     }
 }

@@ -3,9 +3,12 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\data\Pagination;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
-use yii\web\Response;
+
 
 /**
  * This is the model class for table "articles".
@@ -64,6 +67,24 @@ class Articles extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'status' => 'Status',
             'category_id' => 'Category ID',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['updated_at' => new Expression('NOW()')],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at' => new Expression('NOW()')],
+                ],
+//                'value' => [
+//                    'updated_at' => new Expression('NOW()')
+//                ]
+// если вместо метки времени UNIX используется datetime:
+// 'value' => new Expression('NOW()'),
+            ],
         ];
     }
 
@@ -197,6 +218,6 @@ class Articles extends \yii\db\ActiveRecord
 
     public function getAuthor()
     {
-        return $this->hasOne(User::className(), ['id'=>'user_id']);
+        return $this->hasOne(User::class, ['id'=>'user_id']);
     }
 }

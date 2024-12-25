@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\behaviors\AddSomeProperties;
 use app\models\RegisterForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -67,6 +68,7 @@ class AuthController extends Controller
         }
 
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }

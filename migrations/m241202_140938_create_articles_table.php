@@ -24,6 +24,19 @@ class m241202_140938_create_articles_table extends Migration
             'status' => $this->integer(),
             'category_id' => $this->integer(),
         ]);
+
+        $this->createIndex(
+            '{{%idx-articles-user_id}}',
+            '{{%articles}}',
+            'user_id');
+
+
+        $this->addForeignKey('fk-articles-user_id',
+            'articles',
+            'user_id',
+            'users',
+            'id',
+            'CASCADE');
     }
 
     /**
